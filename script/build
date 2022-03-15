@@ -1,0 +1,5 @@
+. ./env
+
+
+# gcc-11 $1 -o ./$(basename $1 .c) -Iinclude -Llib -lmysqlclient
+gcc-11 main.c -o main -Iinclude -Llib -lmysqlclient

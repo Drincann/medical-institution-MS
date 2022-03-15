@@ -1,0 +1,2 @@
+export DYLD_LIBRARY_PATH=$PWD/lib
+export PATH=$PWD/script:$PATH
