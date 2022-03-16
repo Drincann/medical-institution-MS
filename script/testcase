@@ -1,0 +1,5 @@
+. ./env
+
+gcc-11 test.c -o test -Iinclude -Llib -lmysqlclient
+./test
+rm test
