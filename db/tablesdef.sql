@@ -42,7 +42,7 @@ create table FeedBackToDoctor(
   id int not null auto_increment,
   patient varchar(255) not null,
   doctor varchar(255) not null,
-  advice varchar(1024) not null,
+  situation varchar(1024) not null,
   primary key(id),
   foreign key (patient) REFERENCES Patient(username) on delete cascade,
   foreign key (doctor) REFERENCES Staff(username) on delete cascade
