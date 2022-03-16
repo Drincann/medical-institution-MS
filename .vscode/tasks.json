@@ -12,6 +12,7 @@
                 "-Llib",
                 "-Iinclude",
                 "-lmysqlclient",
+                "-g",
                 "-o",
                 "${fileBasenameNoExtension}"
             ],
