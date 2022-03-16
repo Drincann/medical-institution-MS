@@ -131,13 +131,13 @@ const string getError() {
 
 // 所有查询
 // 病人信息
-QueryResult* queryPatientByUsername(string username) {
+QueryResult* queryPatientByUsername(string username) {  // testing covered
     sprintf(globalSqlBuffer, "select * from patient where username = '%s'",
             username);
     return query(globalSqlBuffer);
 }
 
-QueryResult* queryPatient(int limit) {
+QueryResult* queryPatient(int limit) {  // testing covered
     if (limit < 0) {
         sprintf(globalSqlBuffer, "select * from patient");
         return query(globalSqlBuffer);
@@ -147,14 +147,15 @@ QueryResult* queryPatient(int limit) {
     return query(globalSqlBuffer);
 }
 
-uint64_t deletePatientByUsername(string username) {
+uint64_t deletePatientByUsername(string username) {  // testing covered
     sprintf(globalSqlBuffer, "delete from patient where username = '%s'",
             username);
     mysql_query(&globalConn, globalSqlBuffer);
     return mysql_affected_rows(&globalConn);
 }
 
-uint64_t alterPatinetPasswordByUsername(string username, string password) {
+uint64_t alterPatientPasswordByUsername(string username,
+                                        string password) {  // testing covered
     sprintf(globalSqlBuffer,
             "update patient set password = '%s' where username = '%s'",
             password, username);
@@ -162,7 +163,8 @@ uint64_t alterPatinetPasswordByUsername(string username, string password) {
     return mysql_affected_rows(&globalConn);
 }
 
-uint64_t alterPatientSituationByUsername(string username, string situation) {
+uint64_t alterPatientSituationByUsername(string username,
+                                         string situation) {  // testing covered
     sprintf(globalSqlBuffer,
             "update patient set situation = '%s' where username = '%s'",
             situation, username);
@@ -170,7 +172,8 @@ uint64_t alterPatientSituationByUsername(string username, string situation) {
     return mysql_affected_rows(&globalConn);
 }
 
-uint64_t alterPatientInjectedByUsername(string username, int injected) {
+uint64_t alterPatientInjectedByUsername(string username,
+                                        int injected) {  // testing covered
     sprintf(globalSqlBuffer,
             "update patient set injected = %d where username = '%s'", injected,
             username);
@@ -181,7 +184,7 @@ uint64_t alterPatientInjectedByUsername(string username, int injected) {
 uint64_t insertPatient(string username,
                        string password,
                        string situation,
-                       int injected) {
+                       int injected) {  // testing covered
     sprintf(globalSqlBuffer,
             "insert into patient(username, password, situation, injected) "
             "values('%s', '%s', '%s', %d)",
@@ -191,12 +194,12 @@ uint64_t insertPatient(string username,
 }
 
 // 员工信息
-QueryResult* queryStaffByUsername(string username) {
+QueryResult* queryStaffByUsername(string username) {  // testing covered
     sprintf(globalSqlBuffer, "select * from staff where username = '%s'",
             username);
     return query(globalSqlBuffer);
 }
-QueryResult* queryStaff(int limit) {
+QueryResult* queryStaff(int limit) {  // testing covered
     if (limit < 0) {
         sprintf(globalSqlBuffer, "select * from staff");
         return query(globalSqlBuffer);
@@ -205,27 +208,33 @@ QueryResult* queryStaff(int limit) {
     sprintf(globalSqlBuffer, "select * from staff limit %d", limit);
     return query(globalSqlBuffer);
 }
-uint64_t deleteStaffByUsername(string username) {
-    sprintf(globalSqlBuffer, "delete from staff where username = %s", username);
+uint64_t deleteStaffByUsername(string username) {  // testing covered
+    sprintf(globalSqlBuffer, "delete from staff where username = '%s'",
+            username);
     mysql_query(&globalConn, globalSqlBuffer);
     return mysql_affected_rows(&globalConn);
 }
 
-uint64_t alterStaffPasswordByUsername(string username, string password) {
+uint64_t alterStaffPasswordByUsername(string username,
+                                      string password) {  // testing covered
     sprintf(globalSqlBuffer,
             "update staff set password = '%s' where username = '%s'", password,
             username);
     mysql_query(&globalConn, globalSqlBuffer);
+    return mysql_affected_rows(&globalConn);
 }
 
-uint64_t alterStaffTypeByUsername(string username, int type) {
+uint64_t alterStaffTypeByUsername(string username,
+                                  int type) {  // testing covered
     sprintf(globalSqlBuffer, "update staff set type = %d where username = '%s'",
             type, username);
     mysql_query(&globalConn, globalSqlBuffer);
     return mysql_affected_rows(&globalConn);
 }
 
-uint64_t insertStaff(string username, string password, int type) {
+uint64_t insertStaff(string username,
+                     string password,
+                     int type) {  // testing covered
     sprintf(
         globalSqlBuffer,
         "insert into staff(username, password, type) values('%s', '%s', %d)",
@@ -235,43 +244,53 @@ uint64_t insertStaff(string username, string password, int type) {
 }
 
 // 医院信息
-QueryResult* queryInfo() {
+QueryResult* queryInfo() {  // testing covered
     sprintf(globalSqlBuffer, "select * from info limit 1");
     return query(globalSqlBuffer);
 }
 
 // 签到签退
-uint64_t insertSignIn(string username, int type) {
+uint64_t insertSignIn(string username, int type) {  // testing covered
     sprintf(globalSqlBuffer,
-            "insert into signin(username, type) values('%s', %d)", username,
-            type);
+            "insert into signin(staffUsername, type) values('%s', %d)",
+            username, type);
     mysql_query(&globalConn, globalSqlBuffer);
     return mysql_affected_rows(&globalConn);
 }
 
 // 紧急呼救
-uint64_t insertEmergency(string username, string message) {
+uint64_t insertEmergency(string username, string message) {  // testing covered
     sprintf(globalSqlBuffer,
-            "insert into emergency(username, message) values('%s', '%s')",
+            "insert into emergency(patient, message) values('%s', '%s')",
             username, message);
     mysql_query(&globalConn, globalSqlBuffer);
     return mysql_affected_rows(&globalConn);
 }
 
-QueryResult* queryEmergencyByUsername(string username, int limit) {
+QueryResult* queryEmergencyByUsername(string username,
+                                      int limit) {  // testing covered
     if (limit < 0) {
-        sprintf(globalSqlBuffer,
-                "select * from emergency where username = '%s'", username);
+        sprintf(globalSqlBuffer, "select * from emergency where patient = '%s'",
+                username);
         return query(globalSqlBuffer);
     }
     sprintf(globalSqlBuffer,
-            "select * from emergency where username = '%s' limit %d", username,
+            "select * from emergency where patient = '%s' limit %d", username,
             limit);
     return query(globalSqlBuffer);
 }
 
+QueryResult* queryEmergency(int limit) {  // testing covered
+    if (limit < 0) {
+        sprintf(globalSqlBuffer, "select * from emergency");
+        return query(globalSqlBuffer);
+    }
+    sprintf(globalSqlBuffer, "select * from emergency limit %d", limit);
+    return query(globalSqlBuffer);
+}
+
 // 营业额 天/月/季度/年
-double queryDayTurnover(string date) {
+double queryDayTurnover(string date) {  // testing covered
     sprintf(globalSqlBuffer,
             "select sum(amount) from cashierrecord "
             "where TO_DAYS(createTime) = TO_DAYS('%s')",
@@ -292,7 +311,7 @@ double queryDayTurnover(string date) {
     freeQueryResult(result);
     return returnVal;
 }
-double queryMonthTurnover(string date) {
+double queryMonthTurnover(string date) {  // testing covered
     sprintf(globalSqlBuffer,
             "select sum(amount) from cashierrecord "
             "where MONTH(createTime) = MONTH('%s')",
@@ -314,7 +333,7 @@ double queryMonthTurnover(string date) {
     return returnVal;
 }
 
-double queryQuarterTurnover(string date) {
+double queryQuarterTurnover(string date) {  // testing covered
     sprintf(globalSqlBuffer,
             "select sum(amount) from cashierrecord "
             "where QUARTER(createTime) = QUARTER('%s')",
@@ -336,7 +355,7 @@ double queryQuarterTurnover(string date) {
     return returnVal;
 }
 
-double queryYearTurnover(string date) {
+double queryYearTurnover(string date) {  // testing covered
     sprintf(globalSqlBuffer,
             "select sum(amount) from cashierrecord "
             "where YEAR(createTime) = YEAR('%s')",
@@ -355,6 +374,14 @@ double queryYearTurnover(string date) {
     returnVal = ((int)(returnVal * 100)) / 100.0;
     freeQueryResult(result);
     return returnVal;
+}
+
+// 收银
+int64_t insertCashierRecord(string patient, double amount) {
+    sprintf(globalSqlBuffer,
+            "insert into cashierrecord(patient, amount) values('%s', %f)",
+            patient, amount);
+    return mysql_affected_rows(&globalConn);
 }
 
 // VIP
@@ -421,4 +448,104 @@ uint64_t insertVisitRecord(string patientUsername, string doctorUsername) {
             patientUsername, doctorUsername);
     mysql_query(&globalConn, globalSqlBuffer);
     return mysql_affected_rows(&globalConn);
+}
+
+QueryResult* queryVisitRecordByUsername(string username) {
+    sprintf(globalSqlBuffer, "select * from visitrecord where patient = '%s'",
+            username);
+    return query(globalSqlBuffer);
+}
+
+// 用药记录
+int64_t insertMedicationRecord(string patient, string doctor, string dosage) {
+    sprintf(globalSqlBuffer,
+            "insert into medicationrecord(patient, doctor, dosage) "
+            "values('%s', '%s', '%s')",
+            patient, doctor, dosage);
+    return mysql_affected_rows(&globalConn);
+}
+
+QueryResult* queryMedicationRecordByPatientUsername(string patientUsername) {
+    sprintf(globalSqlBuffer,
+            "select * from medicationrecord where patient = '%s'",
+            patientUsername);
+    return query(globalSqlBuffer);
+}
+
+// 护士备忘
+uint64_t insertNurseMemo(string nurseUsername, string content) {
+    sprintf(globalSqlBuffer,
+            "insert into nursememo(nurseUsername, content) "
+            "values('%s', '%s')",
+            nurseUsername, content);
+    mysql_query(&globalConn, globalSqlBuffer);
+    return mysql_affected_rows(&globalConn);
+}
+
+QueryResult* queryNurseMemoByUsername(string nurseUsername) {
+    sprintf(globalSqlBuffer,
+            "select * from nursememo where nurseUsername = '%s'",
+            nurseUsername);
+    return query(globalSqlBuffer);
+}
+
+QueryResult* queryNurseMemo(int limit) {
+    if (limit < 0) {
+        sprintf(globalSqlBuffer, "select * from nursememo");
+        return query(globalSqlBuffer);
+    }
+
+    sprintf(globalSqlBuffer, "select * from nursememo limit %d", limit);
+    return query(globalSqlBuffer);
+}
+
+// 采购记录
+int64_t insertPurchaseRecord(string message) {
+    sprintf(globalSqlBuffer,
+            "insert into purchaserecord(message) "
+            "values('%s')",
+            message);
+    return mysql_affected_rows(&globalConn);
+}
+
+QueryResult* queryPurchaseRecord(int limit) {
+    if (limit < 0) {
+        sprintf(globalSqlBuffer, "select * from purchaserecord");
+        return query(globalSqlBuffer);
+    }
+
+    sprintf(globalSqlBuffer, "select * from purchaserecord limit %d", limit);
+    return query(globalSqlBuffer);
+}
+
+// 反馈到医生
+int64_t insertFeedbackToDoctor(string patient,
+                               string doctor,
+                               string situation) {
+    sprintf(globalSqlBuffer,
+            "insert into feedbacktodoctor(patient, doctor, situation) "
+            "values('%s', '%s', '%s')",
+            patient, doctor, situation);
+    return mysql_affected_rows(&globalConn);
+}
+
+QueryResult* queryFeedbackToDoctorByDoctorUsername(string doctor) {
+    sprintf(globalSqlBuffer,
+            "select * from feedbacktodoctor where doctor = '%s'", doctor);
+    return query(globalSqlBuffer);
+}
+
+// 反馈到患者
+int64_t insertFeedbackToPatient(string patient, string doctor, string advice) {
+    sprintf(globalSqlBuffer,
+            "insert into feedbacktopatient(patient, doctor, advice) "
+            "values('%s', '%s', '%s')",
+            patient, doctor, advice);
+    return mysql_affected_rows(&globalConn);
+}
+
+QueryResult* queryFeedbackToPatientByPatientUsername(string patient) {
+    sprintf(globalSqlBuffer,
+            "select * from feedbacktopatient where patient = '%s'", patient);
+    return query(globalSqlBuffer);
 }
