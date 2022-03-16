@@ -9,25 +9,13 @@ enum State {
 };
 
 // MYSQL 连接配置
-struct MysqlConfig {
+typedef struct MysqlConfig {
     string host;
     string user;
     string pass;
     string database;
     short port;
-};
-
-// 获取 MYSQL 连接配置
-struct MysqlConfig getMysqlConfig() {
-    struct MysqlConfig config;
-    config.user = "root";
-    config.database = "qqwork";
-    config.host = "localhost";
-    config.pass = "";
-    config.port = 3306;
-
-    return config;
-}
+} MysqlConfig;
 
 // 封装的 mysql 查询结果的一部分
 typedef struct QueryRow {
@@ -44,10 +32,39 @@ typedef struct QueryResult {
     char** fieldsNames;
 } QueryResult;
 
+// 全局 connection, 事实上的单例
+MYSQL globalConn;
+
+// 获取 MYSQL 连接配置
+struct MysqlConfig getMysqlConfig() {
+    struct MysqlConfig config;
+    config.user = "root";
+    config.database = "qqwork";
+    config.host = "localhost";
+    config.pass = "";
+    config.port = 3306;
+
+    return config;
+}
+
+MYSQL initDB() {
+    struct MysqlConfig config = getMysqlConfig();
+
+    mysql_init(&globalConn);
+
+    if (!mysql_real_connect(&globalConn, config.host, config.user, config.pass,
+                            config.database, config.port, NULL, 0)) {
+        fprintf(stderr, "%s", mysql_error(&globalConn));
+    }
+
+    // utf-8
+    mysql_set_character_set(&globalConn, "utf8");
+}
+
 // mysql 查询的封装
-QueryResult* query(MYSQL* conn, string sql) {
-    mysql_query(conn, sql);
-    MYSQL_RES* res = mysql_store_result(conn);
+QueryResult* query(string sql) {
+    mysql_query(&globalConn, sql);
+    MYSQL_RES* res = mysql_store_result(&globalConn);
     size_t rowsLength = mysql_num_rows(res);
     size_t fieldsLength = mysql_num_fields(res);
 
