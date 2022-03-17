@@ -3,3 +3,4 @@ include
 lib
 test.dSYM
 main.dSYM
+.DS_Store
