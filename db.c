@@ -1,12 +1,8 @@
+#pragma once
 #include <stdio.h>
+#include <string.h>
 #include "./include/mysql.h"
-#define string char*
-
-// 函数执行结束的状态
-enum State {
-    OK,
-    ERROR,
-};
+#include "./typedef.c"
 
 // MYSQL 连接配置
 typedef struct MysqlConfig {
@@ -50,6 +46,23 @@ void showQueryResult(QueryResult* res) {
     }
 }
 
+string getFieldValue(QueryResult* res, string fieldName, size_t rowidx) {
+    if (res == NULL) {
+        return NULL;
+    }
+    if (res->length <= rowidx) {
+        return NULL;
+    }
+
+    for (size_t fieldidx = 0; fieldidx < res->fieldsLength; fieldidx++) {
+        if (strcmp(res->fieldsNames[fieldidx], fieldName) == 0) {
+            return res->rows[rowidx].fields[fieldidx];
+        }
+    }
+
+    return NULL;
+}
+
 // 全局 connection, 事实上的单例
 MYSQL globalConn;
 // 全局公用的 sql string buffer
@@ -85,6 +98,8 @@ MYSQL initDB() {
 QueryResult* query(string sql) {
     mysql_query(&globalConn, sql);
     MYSQL_RES* res = mysql_store_result(&globalConn);
+    if (res == NULL)
+        return NULL;
     size_t rowsLength = mysql_num_rows(res);
     size_t fieldsLength = mysql_num_fields(res);
 
@@ -197,6 +212,10 @@ uint64_t insertPatient(string username,
 QueryResult* queryStaffByUsername(string username) {  // testing covered
     sprintf(globalSqlBuffer, "select * from staff where username = '%s'",
             username);
+    return query(globalSqlBuffer);
+}
+QueryResult* queryStaffByType(int type) {  // testing covered
+    sprintf(globalSqlBuffer, "select * from staff where type = '%d'", type);
     return query(globalSqlBuffer);
 }
 QueryResult* queryStaff(int limit) {  // testing covered
@@ -347,7 +366,7 @@ double queryQuarterTurnover(string date) {  // testing covered
         return 0;
     }
 
-    showQueryResult(result);
+    // showQueryResult(result);
     double returnVal = atof(result->rows[0].fields[0]);
     // fixed .2
     returnVal = ((int)(returnVal * 100)) / 100.0;
@@ -423,6 +442,13 @@ uint64_t deleteVIPByUsername(string username) {
 }
 
 // 患者预约
+QueryResult* queryReservationByDoctorUsername(string username) {
+    sprintf(globalSqlBuffer, "select * from reservation where doctor = '%s'",
+            username);
+
+    return query(globalSqlBuffer);
+}
+
 uint64_t insertReservation(string patientUsername, string doctorUsername) {
     sprintf(globalSqlBuffer,
             "insert into reservation(patient, doctor) "
@@ -450,8 +476,14 @@ uint64_t insertVisitRecord(string patientUsername, string doctorUsername) {
     return mysql_affected_rows(&globalConn);
 }
 
-QueryResult* queryVisitRecordByUsername(string username) {
+QueryResult* queryVisitRecordByPatientUsername(string username) {
     sprintf(globalSqlBuffer, "select * from visitrecord where patient = '%s'",
+            username);
+    return query(globalSqlBuffer);
+}
+
+QueryResult* queryVisitRecordByDoctorUsername(string username) {
+    sprintf(globalSqlBuffer, "select * from visitrecord where doctor = '%s'",
             username);
     return query(globalSqlBuffer);
 }
@@ -462,6 +494,7 @@ int64_t insertMedicationRecord(string patient, string doctor, string dosage) {
             "insert into medicationrecord(patient, doctor, dosage) "
             "values('%s', '%s', '%s')",
             patient, doctor, dosage);
+    mysql_query(&globalConn, globalSqlBuffer);
     return mysql_affected_rows(&globalConn);
 }
 
@@ -473,11 +506,11 @@ QueryResult* queryMedicationRecordByPatientUsername(string patientUsername) {
 }
 
 // 护士备忘
-uint64_t insertNurseMemo(string nurseUsername, string content) {
+uint64_t insertNurseMemo(string nurseUsername, string message) {
     sprintf(globalSqlBuffer,
-            "insert into nursememo(nurseUsername, content) "
+            "insert into nursememo(nurseUsername, message) "
             "values('%s', '%s')",
-            nurseUsername, content);
+            nurseUsername, message);
     mysql_query(&globalConn, globalSqlBuffer);
     return mysql_affected_rows(&globalConn);
 }
@@ -505,6 +538,7 @@ int64_t insertPurchaseRecord(string message) {
             "insert into purchaserecord(message) "
             "values('%s')",
             message);
+    mysql_query(&globalConn, globalSqlBuffer);
     return mysql_affected_rows(&globalConn);
 }
 
@@ -526,6 +560,7 @@ int64_t insertFeedbackToDoctor(string patient,
             "insert into feedbacktodoctor(patient, doctor, situation) "
             "values('%s', '%s', '%s')",
             patient, doctor, situation);
+    mysql_query(&globalConn, globalSqlBuffer);
     return mysql_affected_rows(&globalConn);
 }
 
@@ -541,6 +576,7 @@ int64_t insertFeedbackToPatient(string patient, string doctor, string advice) {
             "insert into feedbacktopatient(patient, doctor, advice) "
             "values('%s', '%s', '%s')",
             patient, doctor, advice);
+    mysql_query(&globalConn, globalSqlBuffer);
     return mysql_affected_rows(&globalConn);
 }
 
