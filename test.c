@@ -41,8 +41,8 @@ void testQuery() {
         printf("testcase: query error x\n\n");
         return;
     }
-    if (res->length != 0) {
-        printf("testcase: query error y\n\n");
+    if (res->length != 1) {
+        printf("testcase: query error x\n\n");
         return;
     }
 
