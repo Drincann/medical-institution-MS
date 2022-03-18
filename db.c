@@ -400,6 +400,7 @@ int64_t insertCashierRecord(string patient, double amount) {
     sprintf(globalSqlBuffer,
             "insert into cashierrecord(patient, amount) values('%s', %f)",
             patient, amount);
+    mysql_query(&globalConn, globalSqlBuffer);
     return mysql_affected_rows(&globalConn);
 }
 
