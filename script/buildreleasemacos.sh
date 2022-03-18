@@ -1,3 +1,1 @@
-. ./env
-
 gcc main.c -o ./release/macos/out/main -Iinclude -Llib -lmysqlclient
