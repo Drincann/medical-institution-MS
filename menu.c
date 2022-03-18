@@ -730,6 +730,7 @@ Menu* patientMenuExec(string input) {
         getchar();
         return &patientMenu;
     }
+    return &patientMenu;
 }
 
 void patientMenuShowMenu() {
@@ -835,6 +836,7 @@ Menu* nurseMenuExec(string input) {
         return abstractInsertSignIn(nurseMenu.currentUser->username, SIGNOUT,
                                     &nurseMenu);
     }
+    return &nurseMenu;
 }
 
 void nurseMenuShowMenu() {

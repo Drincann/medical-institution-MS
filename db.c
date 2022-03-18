@@ -34,8 +34,8 @@ void showQueryResult(QueryResult* res) {
         return;
     }
 
-    printf("length: %d\n", res->length);
-    printf("fieldsLength: %d\n", res->fieldsLength);
+    printf("length: %zu\n", res->length);
+    printf("fieldsLength: %zu\n", res->fieldsLength);
 
     for (size_t rowidx = 0; rowidx < res->length; rowidx++) {
         for (size_t fieldidx = 0; fieldidx < res->fieldsLength; fieldidx++) {
@@ -80,7 +80,7 @@ struct MysqlConfig getMysqlConfig() {
     return config;
 }
 
-MYSQL initDB() {
+MYSQL* initDB() {
     struct MysqlConfig config = getMysqlConfig();
     globalSqlBuffer = (char*)malloc(sizeof(char) * 1024);
     mysql_init(&globalConn);
@@ -92,6 +92,7 @@ MYSQL initDB() {
 
     // utf-8
     mysql_set_character_set(&globalConn, "utf8");
+    return &globalConn;
 }
 
 // mysql 查询的封装
