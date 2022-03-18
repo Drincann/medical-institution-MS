@@ -81,7 +81,7 @@ Menu doctorMenu = {
     .currentUser = NULL,
     .parent = &topMenu,
     .itemsStr =
-        "1.查看预约\n"
+        "1.查看预约/接诊\n"
         "2.查看患者情况\n"
         "3.查看患者反馈\n"
         "4.发送健康建议\n"
