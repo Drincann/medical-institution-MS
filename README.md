@@ -8,9 +8,27 @@
 
 编译：
 
+在 Linux/Unix(macOS) 下，请链接 mysqlclient :
+
 ```shell
 gcc main.c -o main -Iinclude -Llib -lmysqlclient
 ```
+
+在 Windows 下，请链接 libmysql
+
+```powershell
+gcc main.c -o main -Iinclude -Llib -llibmysql
+```
+
+注意！确保编译器和 MySQL lib 的 arch 相同（32bit/64bit）。
+
+在不同平台下预构建的二进制可执行文件在 `./release` 目录下（64 bit）。
+
+运行时环境（动态链接库）已经提供在 `./release` 下对应的平台目录中（64 bit），将它们放在你编译出的二进制文件周围，就可以正常运行了。
+
+或者，你可以使用 `./script` 下提供的构建脚本 `buildreleasemacos.sh` 和 `buildreleasewindows.ps1` 来编译，前者(shell)用于在 Linux/Unix(macOS) 下构建，后者(powershell)用于在 Windows 下构建。
+
+它们生成的二进制将会被放在 `./release` 下对应平台目录中。
 
 ## 使用 mysql c api 的运行时环境需求
 
@@ -43,8 +61,8 @@ gcc test.c -o test -Iinclude -Llib -lmysqlclient
 
 入口:
 
-- 患者登录 
-- 医疗人员登录 
+- 患者登录
+- 医疗人员登录
 - 退出
 
 管理员:
