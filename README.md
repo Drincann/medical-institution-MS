@@ -16,28 +16,36 @@ gcc main.c -o main -Iinclude -Llib -lmysqlclient
 
 see -> [https://dev.mysql.com/doc/c-api/8.0/en/c-api-running-clients.html](https://dev.mysql.com/doc/c-api/8.0/en/c-api-running-clients.html)
 
+## 测试
+
+请构建 `./test.c`，运行生成的二进制。
+
+```shell
+gcc test.c -o test -Iinclude -Llib -lmysqlclient
+
+./test
+```
+
 ## 需求分析
 
 # TODO
 
+- ~~需求分析 √~~
 - ~~mysql 单例 √~~
-
 - ~~建表 √~~
-
-- 更新文档
-
+- ~~更新文档 √~~
 - ~~封装所有 mysql 过程 √~~
-
-- 写测试
+- ~~写测试 √~~（写了一半）
 
 ### 菜单
 
-菜单针对不同用户是独立的, 所以从用户对象构造一个菜单，接管此后的行为
+菜单针对不同用户是独立的, 所以从用户对象构造一个菜单，接管此后的行为。
 
 入口:
 
-- 患者登录 √
-- 医疗人员登录 √
+- 患者登录 
+- 医疗人员登录 
+- 退出
 
 管理员:
 
@@ -47,37 +55,37 @@ see -> [https://dev.mysql.com/doc/c-api/8.0/en/c-api-running-clients.html](https
   - 月
   - 季
   - 年
-  
-- 管理员管理
+- 账号管理
   - 查询
   - 删除
-  - 更改
   - 注册
 - 医院信息查询
 - 会员管理
   - 查询
   - 删除
-  - 更改
-  - 注册
 - 签到
 - 签退
+- 返回
 
 医生:
 
-- 查询已有预约 √
-- 查询已就诊患者情况 √
-- 为已就诊患者发送建议 √
-- 签到 √
-- 签退 √
+- 查询预约/接诊
+- 查询已就诊患者情况
+- 查询已就诊患者反馈
+- 为已就诊患者发送建议
+- 签到
+- 签退
+- 返回
 
 护士:
 
-- 查询患者数据 √
-- 设置患者情况 √
-- 查询医护备忘 √
-- 添加医护备忘 √
-- 签到 √
-- 签退 √
+- 查询患者数据
+- 设置患者情况
+- 查询医护备忘
+- 添加医护备忘
+- 签到
+- 签退
+- 返回
 
 前台:
 
@@ -85,9 +93,10 @@ see -> [https://dev.mysql.com/doc/c-api/8.0/en/c-api-running-clients.html](https
 - 查询紧急呼叫
 - 收银结算
 - 查询患者会员积分
-- 开桶会员
+- 开通会员
 - 签到
 - 签退
+- 返回
 
 采购员:
 
@@ -95,11 +104,12 @@ see -> [https://dev.mysql.com/doc/c-api/8.0/en/c-api-running-clients.html](https
 - 查询历史补货记录
 - 签到
 - 签退
+- 返回
 
 患者
 
-- 查询医院信息 √
-- 预约 √
+- 查询医院信息
+- 预约
 - 查询就诊记录
 - 查询用药记录
 - 查询疫苗注射情况
@@ -107,6 +117,7 @@ see -> [https://dev.mysql.com/doc/c-api/8.0/en/c-api-running-clients.html](https
 - 紧急呼救
 - 查询会员积分
 - 查询健康建议
+- 返回
 
 ### table
 
@@ -114,45 +125,43 @@ see -> [https://dev.mysql.com/doc/c-api/8.0/en/c-api-running-clients.html](https
 
 |          |        |                                               |
 | -------- | ------ | --------------------------------------------- |
-| id       | int    | primary key auto increasing                   |
-| username | string | 用户名                                        |
+| username | string | primary key                                   |
 | type     | int    | 0 admin 1 frontStaff 2 doctor 3 nurse 4 buyer |
 
 患者 Patient
 
-|           |        |                             |
-| --------- | ------ | --------------------------- |
-| id        | int    | primary key auto increasing |
-| username  | string | 用户名                      |
-| visited   | bool   | 是否已就诊                  |
-| situation | string | 患者情况                    |
-| injected  | bool   | 是否注射疫苗                |
+|           |        |              |
+| --------- | ------ | ------------ |
+| username  | string | primary key  |
+| situation | string | 患者情况     |
+| injected  | bool   | 是否注射疫苗 |
 
 健康建议 FeedBackToPatient
 
-|           |        |                             |
-| --------- | ------ | --------------------------- |
-| id        | int    | primary key auto increasing |
-| patientid | int    | foreign key to staff        |
-| dockorid  | int    | foreign key to staff        |
-| advice    | string | 建议内容                    |
+|         |        |                             |
+| ------- | ------ | --------------------------- |
+| id      | int    | primary key auto increasing |
+| patient | string | foreign key to staff        |
+| dockor  | string | foreign key to staff        |
+| advice  | string | 建议内容                    |
 
 治疗反馈 FeedBackToDoctor
 
 |           |        |                             |
 | --------- | ------ | --------------------------- |
 | id        | int    | primary key auto increasing |
-| patientid | int    | foreign key to staff        |
-| dockorid  | int    | foreign key to staff        |
+| patient   | string | foreign key to staff        |
+| dockor    | string | foreign key to staff        |
 | situation | string | 治疗情况                    |
 
 打卡 SignIn
 
-|        |      |                             |
-| ------ | ---- | --------------------------- |
-| id     | int  | primary key auto increasing |
-| userid | int  | foreign key to staff        |
-| type   | int  | 0 - sign in 1 - sign out    |
+|               |          |                             |
+| ------------- | -------- | --------------------------- |
+| id            | int      | primary key auto increasing |
+| staffUsername | string   | foreign key to staff        |
+| type          | int      | 0 - sign in 1 - sign out    |
+| createTime    | datetime | default currenttime         |
 
 医院信息 info
 
@@ -163,61 +172,61 @@ see -> [https://dev.mysql.com/doc/c-api/8.0/en/c-api-running-clients.html](https
 
 预约信息 Reservation
 
-|           |      |                             |
-| --------- | ---- | --------------------------- |
-| id        | int  | primary key auto increasing |
-| doctorid  |      | foreign key to staff        |
-| patientid |      | foreign key to patient      |
+|         |        |                             |
+| ------- | ------ | --------------------------- |
+| id      | int    | primary key auto increasing |
+| doctor  | string | foreign key to staff        |
+| patient | string | foreign key to patient      |
 
-就诊记录 Visit
-
-|           |      |                             |
-| --------- | ---- | --------------------------- |
-| id        | int  | primary key auto increasing |
-| patientid | int  | foreign key to patient      |
-| doctorid  | int  | foreign key to staff        |
-
-用药记录 Medication
-
-|           |        |                             |
-| --------- | ------ | --------------------------- |
-| id        | int    | primary key auto increasing |
-| patientid | int    | foreign key to patient      |
-| doctorid  | int    | foreign key to staff        |
-| message   | string | 用药信息                    |
-
-护士备忘 nurseMemo
+就诊记录 VisitRecord
 
 |         |        |                             |
 | ------- | ------ | --------------------------- |
 | id      | int    | primary key auto increasing |
-| message | string | 备忘信息                    |
-| nurseid | int    | foreign key to staff        |
+| patient | string | foreign key to patient      |
+| doctor  | string | foreign key to staff        |
 
-收银记录
+用药记录 MedicationRecord
 
-|           |          |                             |
-| --------- | -------- | --------------------------- |
-| id        | int      | primary key auto increasing |
-| amount    | float    | 金额                        |
-| patientid | int      | foreign key to patient      |
-| date      | datetime | 时间                        |
+|         |        |                             |
+| ------- | ------ | --------------------------- |
+| id      | int    | primary key auto increasing |
+| patient | string | foreign key to patient      |
+| doctor  | string | foreign key to staff        |
+| dosage  | string | 用药信息                    |
+
+护士备忘 NurseMemo
+
+|               |        |                             |
+| ------------- | ------ | --------------------------- |
+| id            | int    | primary key auto increasing |
+| message       | string | 备忘信息                    |
+| nurseUsername | string | foreign key to staff        |
+
+收银记录 CashierRecord
+
+|            |          |                             |
+| ---------- | -------- | --------------------------- |
+| id         | int      | primary key auto increasing |
+| amount     | float    | 金额                        |
+| patient    | string   | foreign key to patient      |
+| createTime | datetime | default currenttime         |
 
 会员卡 VIP
 
-|           |      |                             |
-| --------- | ---- | --------------------------- |
-| id        | int  | primary key auto increasing |
-| patientid | int  | foreign key to patient      |
-| point     | int  | 会员积分                    |
+|         |        |                             |
+| ------- | ------ | --------------------------- |
+| id      | int    | primary key auto increasing |
+| patient | String | foreign key to patient      |
+| points  | int    | 会员积分                    |
 
 紧急呼救 Emergency
 
-|           |        |                             |
-| --------- | ------ | --------------------------- |
-| id        | int    | primary key auto increasing |
-| patientid | int    | foreign key to patient      |
-| message   | string | 呼救信息                    |
+|         |        |                             |
+| ------- | ------ | --------------------------- |
+| id      | int    | primary key auto increasing |
+| patient | string | foreign key to patient      |
+| message | string | 呼救信息                    |
 
 进货信息 Purchase
 
