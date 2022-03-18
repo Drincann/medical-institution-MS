@@ -24,7 +24,7 @@ create table Patient(
   username varchar(255) not null,
   password varchar(255) not null,
   -- from table VisitRecord -> visited  tinyint(1) not null,
-  situation varchar(1024) not null DEFAULT '',
+  situation varchar(1023) not null DEFAULT '',
   injected tinyint(1) not null DEFAULT 0,
   -- 0 for not 1 for yes
   primary key(username)
@@ -33,7 +33,7 @@ create table FeedBackToPatient(
   id int not null auto_increment,
   patient varchar(255) not null,
   doctor varchar(255) not null,
-  advice varchar(1024) not null,
+  advice varchar(1023) not null,
   primary key(id),
   foreign key (patient) references Patient(username) on delete cascade,
   foreign key (doctor) references Staff(username) on delete cascade
@@ -42,7 +42,7 @@ create table FeedBackToDoctor(
   id int not null auto_increment,
   patient varchar(255) not null,
   doctor varchar(255) not null,
-  situation varchar(1024) not null,
+  situation varchar(1023) not null,
   primary key(id),
   foreign key (patient) REFERENCES Patient(username) on delete cascade,
   foreign key (doctor) REFERENCES Staff(username) on delete cascade
@@ -51,6 +51,7 @@ create table SignIn(
   id int not null auto_increment,
   staffUsername varchar(255) not null,
   type int not null,
+  createTime DATETIME not null DEFAULT CURRENT_TIMESTAMP,
   -- 0 signin 1 signout
   primary key(id),
   foreign key (staffUsername) REFERENCES Staff(username) on delete cascade
