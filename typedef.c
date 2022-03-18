@@ -3,6 +3,6 @@
 
 // 函数执行结束的状态
 enum State {
-    OK,
-    ERROR,
+  OK,
+  ERR,
 };
