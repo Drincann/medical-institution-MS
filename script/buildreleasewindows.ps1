@@ -1,1 +1,1 @@
-gcc main.c -o ./release/windows/main -Iinclude -Llib -llibmysql
+gcc main.c -o ./release/windows/main -Iinclude -Llib -llibmysql -fexec-charset=GBK
