@@ -58,10 +58,12 @@ Menu* abstractInsertSignIn(string username, SignType type, Menu* returnMenu) {
     return returnMenu;
 }
 
-// 顶级菜单
+// the top level menu
+// methods to controls the menu
 Menu* topMenuExec(string input);
 void topMenuShowMenu();
 
+// top level menu object
 Menu topMenu = {
     .currentUser = NULL,
     .parent = NULL,
@@ -73,7 +75,7 @@ Menu topMenu = {
     .showMenu = topMenuShowMenu,
 };
 
-// 医生菜单
+// doctor menu
 Menu* doctorMenuExec(string input);
 void doctorMenuShowMenu();
 
@@ -92,7 +94,7 @@ Menu doctorMenu = {
     .showMenu = doctorMenuShowMenu,
 };
 
-// 患者菜单
+// patient menu
 Menu* patientMenuExec(string input);
 void patientMenuShowMenu();
 
@@ -114,7 +116,7 @@ Menu patientMenu = {
     .showMenu = patientMenuShowMenu,
 };
 
-// 护士菜单
+// nurse menu
 Menu* nurseMenuExec(string input);
 void nurseMenuShowMenu();
 
@@ -133,7 +135,7 @@ Menu nurseMenu = {
     .showMenu = nurseMenuShowMenu,
 };
 
-// 管理员菜单
+// admin menu
 Menu* adminMenuExec(string input);
 void adminMenuShowMenu();
 
@@ -158,7 +160,7 @@ Menu adminMenu = {
     .showMenu = adminMenuShowMenu,
 };
 
-// 前台菜单
+// front menu
 Menu* frontMenuExec(string input);
 void frontMenuShowMenu();
 
@@ -178,7 +180,7 @@ Menu frontMenu = {
     .showMenu = frontMenuShowMenu,
 };
 
-// 采购员菜单
+// buyer menu
 Menu* buyerMenuExec(string input);
 void buyerMenuShowMenu();
 
