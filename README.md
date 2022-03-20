@@ -8,6 +8,15 @@
 
 编译：
 
+使用 cmake:
+
+```shell
+mkdir build; cd build
+cmake ..; cmake --build .; sudo cmake --install .
+```
+
+或直接手动编译:
+
 在 Linux/Unix(macOS) 下，请链接 mysqlclient :
 
 ```shell
